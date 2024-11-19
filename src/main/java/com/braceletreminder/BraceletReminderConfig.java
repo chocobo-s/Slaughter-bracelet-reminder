@@ -9,12 +9,12 @@ import java.awt.*;
 
 @ConfigGroup("BraceletReminder")
 public interface BraceletReminderConfig extends Config {
-	@ConfigItem(keyName = "slaughter", name = "Enable Bracelet of Slaughter", description = "Highlights Bracelets of Slaughter", position = 1)
+	@ConfigItem(keyName = "slaughter", name = "Bracelet of Slaughter", description = "Highlights Bracelets of Slaughter", position = 1)
 	default boolean slaughter() {
 		return true;
 	}
 
-	@ConfigItem(keyName = "expeditious", name = "Enable Expeditious Bracelet", description = "Highlights Expeditious Bracelets", position = 2)
+	@ConfigItem(keyName = "expeditious", name = "Expeditious Bracelet", description = "Highlights Expeditious Bracelets", position = 2)
 	default boolean expeditious() {
 		return true;
 	}
