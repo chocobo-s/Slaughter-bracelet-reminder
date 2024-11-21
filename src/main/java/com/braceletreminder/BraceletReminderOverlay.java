@@ -37,12 +37,14 @@ import net.runelite.client.ui.overlay.components.PanelComponent;
 public class BraceletReminderOverlay extends OverlayPanel {
     private final BraceletReminderConfig config;
     private final Client client;
+    private final BraceletReminderPlugin plugin;
     private final String LONG_TEXT = "You're not wearing a bracelet";
     private final String SHORT_TEXT = "Bracelet";
 
     @Inject
-    private BraceletReminderOverlay(BraceletReminderConfig config, Client client) {
+    private BraceletReminderOverlay(BraceletReminderConfig config, BraceletReminderPlugin plugin, Client client) {
         this.config = config;
+        this.plugin = plugin;
         this.client = client;
     }
 
@@ -50,7 +52,6 @@ public class BraceletReminderOverlay extends OverlayPanel {
     public Dimension render(Graphics2D graphics) {
 
         panelComponent.getChildren().clear();
-
         switch (config.reminderStyle()) {
             case LONG_TEXT:
                 panelComponent.getChildren().add((LineComponent.builder())
@@ -79,5 +80,6 @@ public class BraceletReminderOverlay extends OverlayPanel {
 
         setPosition(OverlayPosition.TOP_LEFT);
         return panelComponent.render(graphics);
+
     }
 }

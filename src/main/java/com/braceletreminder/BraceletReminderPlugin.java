@@ -23,6 +23,9 @@ import static net.runelite.api.ItemID.*;
 @PluginDescriptor(name = "Bracelet Reminder")
 
 public class BraceletReminderPlugin extends Plugin {
+
+	private int overlayVisible;
+
 	@Inject
 	private Client client;
 
@@ -79,6 +82,7 @@ public class BraceletReminderPlugin extends Plugin {
 
 		if (opponent == null) {
 			lastTime = Instant.now();
+			lastOpponent = null;
 			return;
 		}
 		if (opponent instanceof NPC) {
@@ -99,20 +103,29 @@ public class BraceletReminderPlugin extends Plugin {
 	@Subscribe
 	public void onGameTick(GameTick gameTick) {
 
-		if (lastTime != null && Duration.between(lastTime, Instant.now()).getSeconds() >= 10) {
-			lastOpponent = null;
-			lastTime = null;
+		if (overlayVisible != -1)
+		{
+			checkOverlay();
 		}
+
 		Item gloves = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.GLOVES.getSlotIdx());
 		if (gloves == null && checkInventory() && lastOpponent != null) {
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Your bracelet has broken", null);
+			if(overlayVisible == -1){
+				addOverlay();
+			}
 		}
 		//no gloves equipped and bracelets in inventory
 		else if (lastOpponent != null && getOpponentHealth() < (double) config.healthThreshold() && !checkBracelet() && checkHelmet() && checkInventory()) {
 			// enemy hp is below the threshold here so you can do stuff based on that
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "You should equip bracelet :dinkdonk:!", null);
+			if(overlayVisible == -1){
+				addOverlay();
+			}
+
 		} else {
 			//we can hide the overlay now, since none of the previous conditions matched
+			if(overlayVisible != -1){
+				checkOverlay();
+			}
 		}
 	}
 
@@ -125,11 +138,32 @@ public class BraceletReminderPlugin extends Plugin {
 
 	@Override
 	protected void startUp() throws Exception {
-		overlayManager.add(braceletOverlay);
+		overlayVisible = -1;
 	}
 
 	@Override
 	protected void shutDown() throws Exception {
 		overlayManager.remove(braceletOverlay);
+	}
+
+	private void addOverlay()
+	{
+		overlayManager.add(braceletOverlay);
+		overlayVisible = client.getTickCount();
+	}
+
+	private void removeOverlay()
+	{
+		overlayManager.remove(braceletOverlay);
+		overlayVisible = -1;
+	}
+
+	private void checkOverlay() {
+		if (client.getTickCount() - overlayVisible >= config.overlayDuration()) {
+			removeOverlay();
+		}
+		if (lastOpponent == null) {
+			removeOverlay();
+		}
 	}
 }
