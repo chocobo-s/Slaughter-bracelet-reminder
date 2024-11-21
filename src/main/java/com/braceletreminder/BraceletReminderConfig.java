@@ -40,6 +40,4 @@ public interface BraceletReminderConfig extends Config {
 	}
 	@ConfigItem(keyName = "ReminderStyle", name = "Reminder Style", description = "Changes the style of the reminder overlay", position = 6)
 	default BraceletOverlayStyle reminderStyle() { return BraceletOverlayStyle.LONG_TEXT;}
-	@ConfigItem(keyName = "overlayDuration", name = "Overlay Duration", description = "Overlay duration in game ticks", position = 8)
-	default int overlayDuration() {return 15;}
 }

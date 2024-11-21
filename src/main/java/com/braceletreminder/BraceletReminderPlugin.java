@@ -12,10 +12,7 @@ import net.runelite.client.game.ItemVariationMapping;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
-import java.awt.*;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.regex.Matcher;
+
 
 import static net.runelite.api.ItemID.*;
 
@@ -70,7 +67,6 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	private Actor lastOpponent = null;
-	private Instant lastTime = Instant.now();
 
 	@Subscribe
 	public void onInteractingChanged(InteractingChanged event) {
@@ -81,7 +77,6 @@ public class BraceletReminderPlugin extends Plugin {
 		Actor opponent = event.getTarget();
 
 		if (opponent == null) {
-			lastTime = Instant.now();
 			lastOpponent = null;
 			return;
 		}
@@ -143,23 +138,28 @@ public class BraceletReminderPlugin extends Plugin {
 
 	@Override
 	protected void shutDown() throws Exception {
-		overlayManager.remove(braceletOverlay);
+		if (overlayManager != null) {
+			overlayManager.remove(braceletOverlay);
+		}
 	}
-
 	private void addOverlay()
 	{
-		overlayManager.add(braceletOverlay);
-		overlayVisible = client.getTickCount();
+		if (overlayManager != null){
+			overlayManager.add(braceletOverlay);
+			overlayVisible = client.getTickCount();
+		}
 	}
 
 	private void removeOverlay()
 	{
-		overlayManager.remove(braceletOverlay);
-		overlayVisible = -1;
+		if (overlayManager != null){
+			overlayManager.remove(braceletOverlay);
+			overlayVisible = -1;
+		}
 	}
 
 	private void checkOverlay() {
-		if (client.getTickCount() - overlayVisible >= config.overlayDuration()) {
+		{
 			removeOverlay();
 		}
 		if (lastOpponent == null) {

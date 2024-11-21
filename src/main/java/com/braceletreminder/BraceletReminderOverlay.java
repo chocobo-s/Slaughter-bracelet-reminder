@@ -50,7 +50,9 @@ public class BraceletReminderOverlay extends OverlayPanel {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-
+        if (panelComponent == null) {
+            return null;
+        }
         panelComponent.getChildren().clear();
         switch (config.reminderStyle()) {
             case LONG_TEXT:
@@ -80,6 +82,5 @@ public class BraceletReminderOverlay extends OverlayPanel {
 
         setPosition(OverlayPosition.TOP_LEFT);
         return panelComponent.render(graphics);
-
     }
 }
