@@ -157,10 +157,8 @@ public class BraceletReminderPlugin extends Plugin {
 
 	private void removeOverlay() {
 
-		{
-			overlayManager.remove(braceletOverlay);
-			overlayVisible = -1;
-		}
+		overlayManager.remove(braceletOverlay);
+		overlayVisible = -1;
 	}
 
 	private void checkOverlay() {
