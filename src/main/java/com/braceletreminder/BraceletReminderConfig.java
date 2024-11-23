@@ -8,37 +8,37 @@ import java.awt.*;
 
 @ConfigGroup("BraceletReminder")
 public interface BraceletReminderConfig extends Config {
-	@ConfigItem(keyName = "slaughter", name = "Bracelet of Slaughter", description = "Highlights Bracelets of Slaughter", position = 1)
+	@ConfigItem(keyName = "slaughter", name = "Bracelet of Slaughter", description = "Highlights Bracelets of Slaughter.", position = 1)
 	default boolean slaughter() {
 		return true;
 	}
 
-	@ConfigItem(keyName = "expeditious", name = "Expeditious Bracelet", description = "Highlights Expeditious Bracelets", position = 2)
+	@ConfigItem(keyName = "expeditious", name = "Expeditious Bracelet", description = "Highlights Expeditious Bracelets.", position = 2)
 	default boolean expeditious() {
 		return true;
 	}
 
-	@ConfigItem(keyName = "LowHPThreshold", name = "Health Threshold", description = "Choose what HP threshold you want to be notified to wear your bracelet", position = 7)
+	@ConfigItem(keyName = "LowHPThreshold", name = "Health Threshold", description = "Choose what HP threshold you want to be notified to wear your bracelet.", position = 7)
 
 	default int healthThreshold() {
 		return 15;
 	}
 
-	@ConfigItem(keyName = "shouldFlash", name = "Disco Mode", description = "make the popup box flash between two colours of your choosing", position = 3)
+	@ConfigItem(keyName = "shouldFlash", name = "Disco Mode", description = "make the popup box flash between two colours of your choosing.", position = 3)
 	default boolean shouldFlash() { return false; }
 
 	@Alpha
-	@ConfigItem(keyName = "flashColor1", name = "Main Colour", description = "pick the main colour of the popup reminder", position = 4)
+	@ConfigItem(keyName = "flashColor1", name = "Main Colour", description = "pick the main colour of the popup reminder.", position = 4)
 	default Color flashColor1() {
 		return new Color(23, 255, 177, 150);
 	}
 	@Alpha
-	@ConfigItem(keyName = "flashColor2", name = "Secondary Colour", description = "pick the secondary colour if you have toggled the reminder to flash", position = 5)
+	@ConfigItem(keyName = "flashColor2", name = "Secondary Colour", description = "pick the secondary colour if you have toggled the reminder to flash.", position = 5)
 	default Color flashColor2() {
 		return new Color(151, 88, 221, 150);
 	}
-	@ConfigItem(keyName = "ReminderStyle", name = "Reminder Style", description = "Changes the style of the reminder overlay", position = 6)
+	@ConfigItem(keyName = "ReminderStyle", name = "Reminder Style", description = "Changes the style of the reminder overlay.", position = 6)
 	default BraceletOverlayStyle reminderStyle() { return BraceletOverlayStyle.LONG_TEXT;}
-	@ConfigItem(keyName = "overlayDuration", name = "Overlay Duration", description = "Overlay duration in game ticks", position = 8)
-	default int overlayDuration() {return 15;}
+	@ConfigItem(keyName = "overlayDuration", name = "Overlay Duration", description = "How long the overlay will stay up in seconds.", position = 8)
+	default int overlayDuration() {return 10;}
 }

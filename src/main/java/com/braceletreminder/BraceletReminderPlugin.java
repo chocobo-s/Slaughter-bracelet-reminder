@@ -12,7 +12,6 @@ import net.runelite.client.game.ItemVariationMapping;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
-
 import java.time.Duration;
 import java.time.Instant;
 
@@ -69,6 +68,7 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	private Actor lastOpponent = null;
+	private Instant lastTime = Instant.now();
 
 	@Subscribe
 	public void onInteractingChanged(InteractingChanged event) {
@@ -77,6 +77,11 @@ public class BraceletReminderPlugin extends Plugin {
 		}
 
 		Actor opponent = event.getTarget();
+
+		if (opponent == null) {
+			lastTime = Instant.now();
+			return;
+		}
 
 		if (opponent == null) {
 			lastOpponent = null;
@@ -99,33 +104,26 @@ public class BraceletReminderPlugin extends Plugin {
 
 	@Subscribe
 	public void onGameTick(GameTick gameTick) {
+		if (lastTime != null && Duration.between(lastTime, Instant.now()).getSeconds() >= config.overlayDuration()) {
+			lastOpponent = null;
+			lastTime = null;
+		}
 		if (overlayVisible != -1) {
 			checkOverlay();
 		}
 
 		Item gloves = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.GLOVES.getSlotIdx());
-		if (gloves == null && checkInventory() && lastOpponent != null) {
+		boolean shouldAddOverlay =
+				(gloves == null && checkInventory() && lastOpponent != null) ||
+						(lastOpponent != null && getOpponentHealth() < (double) config.healthThreshold() && !checkBracelet() && checkHelmet() && checkInventory());
+
+		if (shouldAddOverlay) {
 			if (overlayVisible == -1) {
 				addOverlay();
 			}
-		}
-
-		//no gloves equipped and bracelets in inventory
-		boolean lastOpponentnull = lastOpponent != null;
-		boolean opphealth = getOpponentHealth() < (double) config.healthThreshold();
-		boolean bracelet = checkBracelet();
-		boolean helmet = checkHelmet();
-		boolean invent = checkInventory();
-
-		if (lastOpponentnull && opphealth && !bracelet && helmet && invent) {
-			if (overlayVisible == -1) {
-				addOverlay();
-			}
-
-
 		} else {
 			if (overlayVisible != -1) {
-				checkOverlay();
+				removeOverlay();
 			}
 		}
 	}
@@ -147,26 +145,26 @@ public class BraceletReminderPlugin extends Plugin {
 		if (overlayManager != null)
 			overlayManager.remove(braceletOverlay);
 
+
 	}
 
 	private void addOverlay() {
-		if (overlayManager != null)
-		{
+		if (overlayManager != null) {
 			overlayManager.add(braceletOverlay);
 			overlayVisible = client.getTickCount();
 		}
 	}
 
 	private void removeOverlay() {
-		overlayManager.remove(braceletOverlay);
+
 		{
+			overlayManager.remove(braceletOverlay);
 			overlayVisible = -1;
 		}
 	}
 
 	private void checkOverlay() {
-		if (client.getTickCount() - overlayVisible >= config.overlayDuration())
-		{
+		if (checkBracelet() && lastOpponent == null) {
 			removeOverlay();
 		}
 	}
