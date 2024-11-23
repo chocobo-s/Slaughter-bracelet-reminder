@@ -80,7 +80,7 @@ public class BraceletReminderOverlay extends OverlayPanel {
             panelComponent.setBackgroundColor(config.flashColor1());
         }
 
-        setPosition(OverlayPosition.TOP_LEFT);
+        setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         return panelComponent.render(graphics);
     }
 }
