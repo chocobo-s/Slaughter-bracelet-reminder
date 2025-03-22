@@ -51,7 +51,7 @@ public class BraceletReminderPlugin extends Plugin {
 		return (config.slaughter() && inventory.contains(BRACELET_OF_SLAUGHTER)) || (config.expeditious() && inventory.contains(EXPEDITIOUS_BRACELET));
 	}
 	boolean checkAmulet() {
-		Item neck = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.AMULET.getSlotIdx())
+		Item neck = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.AMULET.getSlotIdx());
 		if (neck == null) {
 			return false;
 		}
@@ -59,7 +59,7 @@ public class BraceletReminderPlugin extends Plugin {
 		boolean amuletEquipped2 = ItemVariationMapping.getVariations(SALVE_AMULETEI_25278).contains(neck.getId());
 		boolean	amuletEquipped3	= ItemVariationMapping.getVariations(SALVE_AMULETI_26763).contains(neck.getId());
 		boolean amuletEquipped4 = ItemVariationMapping.getVariations(SALVE_AMULET_E).contains(neck.getId());
-		return amuletEquipped || amuletEquipped2 || amuletEquipped3 || amuletEquipped4);
+		return (amuletEquipped || amuletEquipped2 || amuletEquipped3 || amuletEquipped4);
 
 	}
 
@@ -127,7 +127,7 @@ public class BraceletReminderPlugin extends Plugin {
 		Item gloves = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.GLOVES.getSlotIdx());
 		boolean shouldAddOverlay =
 				(gloves == null && checkInventory() && lastOpponent != null) ||
-						(lastOpponent != null && getOpponentHealth() < (double) config.healthThreshold() && !checkBracelet() && checkAmulet() && checkHelmet() && checkInventory());
+						(lastOpponent != null && getOpponentHealth() < (double) config.healthThreshold() && !checkBracelet() && (checkAmulet() || checkHelmet()) && checkInventory());
 
 		if (shouldAddOverlay) {
 			if (overlayVisible == -1) {
