@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -15,7 +17,6 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import java.time.Duration;
 import java.time.Instant;
 
-import static net.runelite.api.ItemID.*;
 
 @Slf4j
 @PluginDescriptor(name = "Bracelet Reminder")
@@ -23,6 +24,20 @@ import static net.runelite.api.ItemID.*;
 public class BraceletReminderPlugin extends Plugin {
 
 	private int overlayVisible;
+
+	private static final int BRACELET_OF_SLAUGHTER = ItemID.BRACELET_OF_SLAUGHTER;
+	private static final int EXPEDITIOUS_BRACELET = ItemID.EXPEDITIOUS_BRACELET;
+	private static final int SALVE_AMULETEI = ItemID.NZONE_SALVE_AMULET_E;
+	private static final int SALVE_AMULET_E = ItemID.LOTR_CRYSTALSHARD_NECKLACE_UPGRADE;
+	private static final int AMULET_OF_AVARICE = ItemID.WILD_CAVE_AMULET;
+	private static final int SLAYER_HELMET = ItemID.SLAYER_HELM;
+	private static final int BLACK_MASK = ItemID.HARMLESS_BLACK_MASK;
+	private static final int BLACK_MASK_I = ItemID.NZONE_BLACK_MASK;
+	private static final int SPINY_HELMET = ItemID.WALLBEAST_SPIKE_HELMET;
+	private static final int NOSE_PEG = ItemID.SLAYER_NOSEPEG;
+	private static final int FACEMASK = ItemID.SLAYER_FACEMASK;
+	private static final int EARMUFFS = ItemID.SLAYER_EARMUFFS;
+	private static final int REINFORCED_GOGGLES  = ItemID.SLAYER_REINFORCED_GOGGLES;
 
 	@Inject
 	private Client client;
@@ -42,7 +57,7 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	boolean checkBracelet() {
-		final ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		final ItemContainer equipment = client.getItemContainer(InventoryID.WORN);
 		if (equipment == null)
 		{
 			return false;
@@ -51,11 +66,11 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	boolean checkInventory() {
-		final ItemContainer inventory = client.getItemContainer(InventoryID.INVENTORY);
+		final ItemContainer inventory = client.getItemContainer(InventoryID.WORN);
 		return (config.slaughter() && inventory.contains(BRACELET_OF_SLAUGHTER)) || (config.expeditious() && inventory.contains(EXPEDITIOUS_BRACELET));
 	}
 	boolean checkAmulet() {
-		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		ItemContainer equipment = client.getItemContainer(InventoryID.WORN);
 		Item neck = equipment != null ? equipment.getItem(EquipmentInventorySlot.AMULET.getSlotIdx()) : null;
 		if (neck == null) {
 			return false;
@@ -68,7 +83,7 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	boolean checkHelmet() {
-		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		ItemContainer equipment = client.getItemContainer(InventoryID.WORN);
 		Item hat = equipment != null ? equipment.getItem(EquipmentInventorySlot.HEAD.getSlotIdx()) : null;
 		if (hat == null) {
 			return false;
@@ -126,7 +141,7 @@ public class BraceletReminderPlugin extends Plugin {
 			checkOverlay();
 		}
 
-		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		ItemContainer equipment = client.getItemContainer(InventoryID.WORN);
 		Item gloves = equipment != null ? equipment.getItem(EquipmentInventorySlot.GLOVES.getSlotIdx()) : null;
 		boolean shouldAddOverlay =
 				(gloves == null && checkInventory() && lastOpponent != null) ||
