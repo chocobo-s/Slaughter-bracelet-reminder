@@ -43,6 +43,10 @@ public class BraceletReminderPlugin extends Plugin {
 
 	boolean checkBracelet() {
 		final ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		if (equipment == null)
+		{
+			return false;
+		}
 		return equipment.contains(BRACELET_OF_SLAUGHTER) || equipment.contains(EXPEDITIOUS_BRACELET);
 	}
 
@@ -51,7 +55,8 @@ public class BraceletReminderPlugin extends Plugin {
 		return (config.slaughter() && inventory.contains(BRACELET_OF_SLAUGHTER)) || (config.expeditious() && inventory.contains(EXPEDITIOUS_BRACELET));
 	}
 	boolean checkAmulet() {
-		Item neck = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.AMULET.getSlotIdx());
+		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		Item neck = equipment != null ? equipment.getItem(EquipmentInventorySlot.AMULET.getSlotIdx()) : null;
 		if (neck == null) {
 			return false;
 		}
@@ -63,7 +68,8 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	boolean checkHelmet() {
-		Item hat = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.HEAD.getSlotIdx());
+		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		Item hat = equipment != null ? equipment.getItem(EquipmentInventorySlot.HEAD.getSlotIdx()) : null;
 		if (hat == null) {
 			return false;
 		}
@@ -91,13 +97,10 @@ public class BraceletReminderPlugin extends Plugin {
 
 		if (opponent == null) {
 			lastTime = Instant.now();
-			return;
-		}
-
-		if (opponent == null) {
 			lastOpponent = null;
 			return;
 		}
+
 		if (opponent instanceof NPC) {
 			NPC npc = (NPC) opponent;
 			int combatLevel = npc.getCombatLevel();
@@ -123,7 +126,8 @@ public class BraceletReminderPlugin extends Plugin {
 			checkOverlay();
 		}
 
-		Item gloves = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.GLOVES.getSlotIdx());
+		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		Item gloves = equipment != null ? equipment.getItem(EquipmentInventorySlot.GLOVES.getSlotIdx()) : null;
 		boolean shouldAddOverlay =
 				(gloves == null && checkInventory() && lastOpponent != null) ||
 						(lastOpponent != null && getOpponentHealth() < (double) config.healthThreshold() && !checkBracelet() && (checkAmulet() || checkHelmet()) && checkInventory());
