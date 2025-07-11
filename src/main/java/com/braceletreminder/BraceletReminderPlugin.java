@@ -67,6 +67,10 @@ public class BraceletReminderPlugin extends Plugin {
 
 	boolean checkInventory() {
 		final ItemContainer inventory = client.getItemContainer(InventoryID.WORN);
+		if (inventory == null)
+		{
+			return false;
+		}
 		return (config.slaughter() && inventory.contains(BRACELET_OF_SLAUGHTER)) || (config.expeditious() && inventory.contains(EXPEDITIOUS_BRACELET));
 	}
 	boolean checkAmulet() {
