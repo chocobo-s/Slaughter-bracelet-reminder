@@ -4,6 +4,8 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Range;
+import net.runelite.client.config.Units;
 import java.awt.*;
 
 @ConfigGroup("BraceletReminder")
@@ -18,8 +20,9 @@ public interface BraceletReminderConfig extends Config {
 		return true;
 	}
 
-	@ConfigItem(keyName = "LowHPThreshold", name = "Health Threshold", description = "Choose what HP threshold you want to be notified to wear your bracelet.", position = 7)
-
+	@Range(min = 0, max = 100)
+	@Units(Units.PERCENT)
+	@ConfigItem(keyName = "LowHPThreshold", name = "Health Threshold", description = "Remind you to wear your bracelet when the monster's health drops to or below this percentage.", position = 7)
 	default int healthThreshold() {
 		return 15;
 	}

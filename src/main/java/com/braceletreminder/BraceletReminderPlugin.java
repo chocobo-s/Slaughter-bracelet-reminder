@@ -104,7 +104,7 @@ public class BraceletReminderPlugin extends Plugin {
 	}
 
 	private Actor lastOpponent = null;
-	private Instant lastTime = Instant.now();
+	private Instant lastTime = null;
 
 	@Subscribe
 	public void onInteractingChanged(InteractingChanged event) {
@@ -125,6 +125,8 @@ public class BraceletReminderPlugin extends Plugin {
 			int combatLevel = npc.getCombatLevel();
 			if (combatLevel >= 1) {
 				lastOpponent = opponent;
+				// New fight; cancel the timeout from the previous one so it doesn't clear this opponent
+				lastTime = null;
 			}
 		}
 	}
@@ -132,6 +134,10 @@ public class BraceletReminderPlugin extends Plugin {
 	public double getOpponentHealth() {
 		int healthRatio = lastOpponent.getHealthRatio();
 		int healthScale = lastOpponent.getHealthScale();
+		if (healthRatio < 0 || healthScale <= 0) {
+			// Health bar not visible; treat as full health so the reminder isn't triggered
+			return 100;
+		}
 		return (healthRatio / (double) healthScale) * 100;
 	}
 
@@ -149,7 +155,7 @@ public class BraceletReminderPlugin extends Plugin {
 		Item gloves = equipment != null ? equipment.getItem(EquipmentInventorySlot.GLOVES.getSlotIdx()) : null;
 		boolean shouldAddOverlay =
 				(gloves == null && checkInventory() && lastOpponent != null) ||
-						(lastOpponent != null && getOpponentHealth() < (double) config.healthThreshold() && !checkBracelet() && (checkAmulet() || checkHelmet()) && checkInventory());
+						(lastOpponent != null && getOpponentHealth() <= (double) config.healthThreshold() && !checkBracelet() && (checkAmulet() || checkHelmet()) && checkInventory());
 
 		if (shouldAddOverlay) {
 			if (overlayVisible == -1) {
